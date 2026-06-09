@@ -9,7 +9,7 @@ class OnboardingPage extends GetView<OnboardingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF8F8F8),
+      backgroundColor: const Color(0xffFeFeFe),
       body: SafeArea(
         child: Column(
           children: [
@@ -61,7 +61,7 @@ class OnboardingPage extends GetView<OnboardingController> {
                           item['title']!.tr,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 42,
+                            fontSize: 35,
                             fontWeight: FontWeight.w700,
                             color: Color(0xff062A5B),
                           ),
@@ -74,7 +74,7 @@ class OnboardingPage extends GetView<OnboardingController> {
                           item['description']!.tr,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 24,
+                            fontSize: 21,
                             color: Colors.black87,
                           ),
                         ),
@@ -130,7 +130,7 @@ class OnboardingPage extends GetView<OnboardingController> {
                   child: Text(
                     'next'.tr,
                     style: const TextStyle(
-                      fontSize: 28,
+                      fontSize: 18,
                       color: Colors.white,
                     ),
                   ),
