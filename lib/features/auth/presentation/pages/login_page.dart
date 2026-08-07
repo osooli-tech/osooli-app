@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../controllers/login_controller.dart';
 import '../widgets/auth_header.dart';
+import '../widgets/phone_input_formatter.dart';
 
 class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
@@ -41,6 +42,7 @@ class LoginPage extends GetView<LoginController> {
                   textAlign: TextAlign.left,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'[\d+\s\-]')),
+                    PhoneInputFormatter(),
                   ],
                   decoration: InputDecoration(
                     hintText: 'phone_hint'.tr,
