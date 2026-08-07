@@ -12,18 +12,25 @@ import '../controllers/shell_controller.dart';
 class ShellPage extends GetView<ShellController> {
   const ShellPage({super.key});
 
+  /// Builds the tab only after its first visit, so its controller and API
+  /// calls do not fire while the user is still on the home tab.
+  Widget _lazy(int index, Widget Function() builder) =>
+      controller.visited.contains(index)
+          ? builder()
+          : const SizedBox.shrink();
+
   @override
   Widget build(BuildContext context) {
     return Obx(
       () => Scaffold(
         body: IndexedStack(
           index: controller.currentIndex.value,
-          children: const [
-            DashboardTab(),
-            MapTab(),
-            DeedsTab(),
-            SearchTab(),
-            AccountTab(),
+          children: [
+            const DashboardTab(),
+            _lazy(1, () => const MapTab()),
+            _lazy(2, () => const DeedsTab()),
+            _lazy(3, () => const SearchTab()),
+            _lazy(4, () => const AccountTab()),
           ],
         ),
         bottomNavigationBar: NavigationBar(

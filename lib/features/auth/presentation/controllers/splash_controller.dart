@@ -11,7 +11,7 @@ class SplashController extends GetxController {
   Future<void> onReady() async {
     super.onReady();
     // Brief pause so the logo is visible.
-    await Future.delayed(const Duration(milliseconds: 900));
+    await Future.delayed(const Duration(milliseconds: 400));
     var hasSession = false;
     try {
       hasSession = await repository.hasSession();
