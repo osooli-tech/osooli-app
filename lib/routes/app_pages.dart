@@ -1,20 +1,50 @@
 import 'package:get/get.dart';
 
-import '../features/onboarding/presentation/pages/onboarding_page.dart';
+import '../features/auth/presentation/bindings/auth_binding.dart';
+import '../features/auth/presentation/pages/login_page.dart';
+import '../features/auth/presentation/pages/otp_page.dart';
+import '../features/auth/presentation/pages/splash_page.dart';
+import '../features/home/presentation/bindings/home_binding.dart';
+import '../features/home/presentation/pages/home_page.dart';
 import '../features/onboarding/presentation/bindings/onboarding_binding.dart';
+import '../features/onboarding/presentation/pages/onboarding_page.dart';
 
 class Routes {
+  static const splash = '/splash';
   static const onboarding = '/onboarding';
+  static const login = '/login';
+  static const otp = '/otp';
+  static const home = '/home';
 }
 
 class AppPages {
-  static const initial = Routes.onboarding;
+  static const initial = Routes.splash;
 
   static final routes = [
+    GetPage(
+      name: Routes.splash,
+      page: () => const SplashPage(),
+      binding: SplashBinding(),
+    ),
     GetPage(
       name: Routes.onboarding,
       page: () => const OnboardingPage(),
       binding: OnboardingBinding(),
+    ),
+    GetPage(
+      name: Routes.login,
+      page: () => const LoginPage(),
+      binding: LoginBinding(),
+    ),
+    GetPage(
+      name: Routes.otp,
+      page: () => const OtpPage(),
+      binding: OtpBinding(),
+    ),
+    GetPage(
+      name: Routes.home,
+      page: () => const HomePage(),
+      binding: HomeBinding(),
     ),
   ];
 }

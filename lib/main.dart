@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'core/bindings/initial_binding.dart';
 import 'core/lang/app_translations.dart';
+import 'core/theme/app_theme.dart';
 import 'routes/app_pages.dart';
 
 void main() {
@@ -18,14 +20,10 @@ class MyApp extends StatelessWidget {
       fallbackLocale: const Locale('en', 'US'),
       debugShowCheckedModeBanner: false,
       title: 'Osoli',
-      // أول شاشة
+      initialBinding: InitialBinding(),
       initialRoute: AppPages.initial,
-      // جميع Routes
       getPages: AppPages.routes,
-      theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Tajawal',
-      ),
+      theme: AppTheme.light,
     );
   }
 }

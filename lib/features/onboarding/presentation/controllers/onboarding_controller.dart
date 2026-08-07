@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../routes/app_pages.dart';
+
 class OnboardingController extends GetxController {
   final PageController pageController = PageController();
 
@@ -35,7 +37,7 @@ class OnboardingController extends GetxController {
         curve: Curves.ease,
       );
     } else {
-      Get.offAllNamed('/login');
+      Get.offAllNamed(Routes.login);
     }
   }
 
