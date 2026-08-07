@@ -4,10 +4,10 @@ import '../features/auth/presentation/bindings/auth_binding.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/otp_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
-import '../features/home/presentation/bindings/home_binding.dart';
-import '../features/home/presentation/pages/home_page.dart';
 import '../features/onboarding/presentation/bindings/onboarding_binding.dart';
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
+import '../features/shell/presentation/bindings/shell_binding.dart';
+import '../features/shell/presentation/pages/shell_page.dart';
 
 class Routes {
   static const splash = '/splash';
@@ -43,8 +43,8 @@ class AppPages {
     ),
     GetPage(
       name: Routes.home,
-      page: () => const HomePage(),
-      binding: HomeBinding(),
+      page: () => const ShellPage(),
+      binding: ShellBinding(),
     ),
   ];
 }
