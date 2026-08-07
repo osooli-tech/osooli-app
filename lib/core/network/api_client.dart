@@ -22,7 +22,8 @@ class ApiClient {
   })  : _tokenStorage = tokenStorage,
         _http = httpClient ?? http.Client();
 
-  Future<Map<String, dynamic>> get(String path) => _send('GET', path);
+  Future<Map<String, dynamic>> get(String path, {Map<String, String>? query}) =>
+      _send('GET', path, query: query);
 
   Future<Map<String, dynamic>> post(
     String path, {
@@ -35,6 +36,7 @@ class ApiClient {
     String method,
     String path, {
     Map<String, dynamic>? body,
+    Map<String, String>? query,
     bool authorized = true,
   }) async {
     final headers = <String, String>{
@@ -49,7 +51,10 @@ class ApiClient {
 
     http.Response response;
     try {
-      final uri = Uri.parse('$baseUrl$path');
+      var uri = Uri.parse('$baseUrl$path');
+      if (query != null && query.isNotEmpty) {
+        uri = uri.replace(queryParameters: {...uri.queryParameters, ...query});
+      }
       final request = http.Request(method, uri)..headers.addAll(headers);
       if (body != null) request.body = jsonEncode(body);
       response =
