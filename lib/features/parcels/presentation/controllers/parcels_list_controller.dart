@@ -16,6 +16,16 @@ class ParcelsListController extends GetxController {
   final error = RxnString();
   final searchQuery = ''.obs;
 
+  /// Client-side deed-status filter — null means all. The parcels endpoint
+  /// has no status parameter, so this filters the loaded list.
+  final statusFilter = RxnString();
+
+  List<ParcelSummary> get filtered => statusFilter.value == null
+      ? items
+      : items.where((p) => p.deedStatus == statusFilter.value).toList();
+
+  void setStatusFilter(String? status) => statusFilter.value = status;
+
   int _page = 1;
   bool _hasMore = false;
   Timer? _debounce;

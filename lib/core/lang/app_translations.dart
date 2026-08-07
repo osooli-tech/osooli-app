@@ -88,6 +88,9 @@ class AppTranslations extends Translations {
           'land_transaction': 'Land transaction',
           'allocation_method': 'Allocation method',
           'fall_in': 'Falls in',
+          'filter_all': 'All',
+          'filter_active': 'Updated',
+          'filter_old': 'Old',
         },
         'ar_SA': {
           'skip': 'تخطي',
@@ -174,6 +177,9 @@ class AppTranslations extends Translations {
           'land_transaction': 'نوع التعامل',
           'allocation_method': 'طريقة التحديد',
           'fall_in': 'يقع ضمن',
+          'filter_all': 'الكل',
+          'filter_active': 'محدث',
+          'filter_old': 'قديم',
         },
       };
 }

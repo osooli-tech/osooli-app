@@ -19,7 +19,7 @@ class ShellPage extends GetView<ShellController> {
           index: controller.currentIndex.value,
           children: const [
             DashboardTab(),
-            SafeArea(child: ParcelsListView()),
+            ParcelsListView(),
             CompareTab(),
             MoreTab(),
           ],

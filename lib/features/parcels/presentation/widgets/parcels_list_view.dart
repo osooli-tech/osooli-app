@@ -9,27 +9,16 @@ import 'parcel_card.dart';
 
 /// The parcels list body — reused by the routed page and the shell tab.
 class ParcelsListView extends GetView<ParcelsListController> {
-  const ParcelsListView({super.key});
+  /// Shown when opened as a routed page (from the dashboard stat card).
+  final bool showBack;
+
+  const ParcelsListView({super.key, this.showBack = false});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-          child: TextField(
-            onChanged: controller.onSearchChanged,
-            textInputAction: TextInputAction.search,
-            decoration: InputDecoration(
-              hintText: 'parcels_search_hint'.tr,
-              hintStyle:
-                  const TextStyle(fontSize: 14, color: AppColors.textSoft),
-              prefixIcon:
-                  const Icon(Icons.search, color: AppColors.textSoft),
-              isDense: true,
-            ),
-          ),
-        ),
+        _Header(showBack: showBack),
         Expanded(
           child: Obx(() {
             if (controller.isLoading.value) {
@@ -39,7 +28,8 @@ class ParcelsListView extends GetView<ParcelsListController> {
             if (error != null) {
               return AppErrorView(message: error, onRetry: controller.fetch);
             }
-            if (controller.items.isEmpty) {
+            final parcels = controller.filtered;
+            if (parcels.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -67,12 +57,12 @@ class ParcelsListView extends GetView<ParcelsListController> {
                 },
                 child: ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                  itemCount: controller.items.length +
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                  itemCount: parcels.length +
                       (controller.isLoadingMore.value ? 1 : 0),
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
-                    if (index >= controller.items.length) {
+                    if (index >= parcels.length) {
                       return const Center(
                         child: Padding(
                           padding: EdgeInsets.all(12),
@@ -80,7 +70,7 @@ class ParcelsListView extends GetView<ParcelsListController> {
                         ),
                       );
                     }
-                    final parcel = controller.items[index];
+                    final parcel = parcels[index];
                     return ParcelCard(
                       parcel: parcel,
                       onTap: () => Get.toNamed(
@@ -95,6 +85,146 @@ class ParcelsListView extends GetView<ParcelsListController> {
           }),
         ),
       ],
+    );
+  }
+}
+
+/// Dark navy header holding the title, a white rounded search field, and the
+/// status filter chips — matching the deeds-registry mockup style.
+class _Header extends GetView<ParcelsListController> {
+  final bool showBack;
+  const _Header({required this.showBack});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(
+          16, MediaQuery.of(context).padding.top + 12, 16, 18),
+      decoration: const BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(22)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (showBack)
+                IconButton(
+                  onPressed: Get.back,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.arrow_forward, color: Colors.white),
+                ),
+              if (showBack) const SizedBox(width: 8),
+              Text(
+                'nav_parcels'.tr,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          TextField(
+            onChanged: controller.onSearchChanged,
+            textInputAction: TextInputAction.search,
+            style: const TextStyle(fontSize: 14),
+            decoration: InputDecoration(
+              hintText: 'parcels_search_hint'.tr,
+              hintStyle:
+                  const TextStyle(fontSize: 13.5, color: AppColors.textSoft),
+              prefixIcon: const Icon(Icons.search, color: AppColors.textSoft),
+              filled: true,
+              fillColor: Colors.white,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 13),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: const BorderSide(color: AppColors.teal, width: 1.4),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Obx(
+            () => SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _FilterChip(
+                    label: 'filter_all'.tr,
+                    selected: controller.statusFilter.value == null,
+                    onTap: () => controller.setStatusFilter(null),
+                  ),
+                  const SizedBox(width: 8),
+                  _FilterChip(
+                    label: 'filter_active'.tr,
+                    selected: controller.statusFilter.value == 'محدث',
+                    onTap: () => controller.setStatusFilter('محدث'),
+                  ),
+                  const SizedBox(width: 8),
+                  _FilterChip(
+                    label: 'filter_old'.tr,
+                    selected: controller.statusFilter.value == 'قديم',
+                    onTap: () => controller.setStatusFilter('قديم'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _FilterChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.teal : Colors.transparent,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: selected ? AppColors.teal : Colors.white70,
+            width: 1.2,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13.5,
+            fontWeight: FontWeight.w700,
+            color: selected ? Colors.white : Colors.white,
+          ),
+        ),
+      ),
     );
   }
 }
