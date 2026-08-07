@@ -8,7 +8,7 @@ import '../errors/api_exception.dart';
 import '../storage/token_storage.dart';
 
 class ApiClient {
-  static const baseUrl = 'http://10.0.2.2:8000/api/v1';
+  static const baseUrl = 'https://lightgreen-snake-236372.hostingersite.com/api/v1';
   static const _timeout = Duration(seconds: 20);
 
   final TokenStorage _tokenStorage;

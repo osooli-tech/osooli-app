@@ -12,7 +12,12 @@ class SplashController extends GetxController {
     super.onReady();
     // Brief pause so the logo is visible.
     await Future.delayed(const Duration(milliseconds: 900));
-    final hasSession = await repository.hasSession();
+    var hasSession = false;
+    try {
+      hasSession = await repository.hasSession();
+    } catch (_) {
+      // Secure storage can fail on some devices; treat as signed out.
+    }
     Get.offAllNamed(hasSession ? Routes.home : Routes.onboarding);
   }
 }

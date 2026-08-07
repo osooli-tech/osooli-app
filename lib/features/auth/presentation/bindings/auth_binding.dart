@@ -10,7 +10,9 @@ import '../controllers/splash_controller.dart';
 class SplashBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => SplashController(Get.find<AuthRepository>()));
+    // Get.put (not lazyPut): SplashPage never reads the controller in build,
+    // so a lazy controller would never be created and onReady would never run.
+    Get.put(SplashController(Get.find<AuthRepository>()));
   }
 }
 
