@@ -122,7 +122,7 @@ class OnboardingPage extends GetView<OnboardingController> {
                 child: ElevatedButton(
                   onPressed: controller.nextPage,
                   style: ElevatedButton.styleFrom(
-                    primary: const Color(0xff062A5B),
+                    // primary: const Color(0xff062A5B),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40),
                     ),
