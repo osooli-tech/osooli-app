@@ -5,7 +5,8 @@
 class MapConfig {
   static const token = String.fromEnvironment(
     'MAPBOX_TOKEN',
-    defaultValue: '',
+    defaultValue:
+        'pk.eyJ1Ijoic2FrdWtpMTIzNCIsImEiOiJjbXF0Z2FvMjkwZDRkMnlzYmFhdXdmNDBsIn0.yAsK_j_dwG2tN9wipHEOuw',
   );
 
   static const _lightStyle = 'mapbox/light-v11';

@@ -15,11 +15,11 @@ class LoginController extends GetxController {
   final error = RxnString();
 
   Future<void> submit() async {
-    final phone = PhoneValidator.normalize(phoneController.text);
-    if (!PhoneValidator.isValid(phone)) {
+    if (!PhoneValidator.isValid(phoneController.text)) {
       error.value = 'phone_invalid';
       return;
     }
+    final phone = PhoneValidator.toApiFormat(phoneController.text);
     error.value = null;
     isLoading.value = true;
     try {
