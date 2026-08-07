@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/app_error_view.dart';
+import '../../../../routes/app_pages.dart';
 import '../../domain/entities/parcel_detail.dart';
 import '../controllers/parcel_detail_controller.dart';
 import '../widgets/deed_status_chip.dart';
@@ -64,6 +65,23 @@ class ParcelDetailPage extends GetView<ParcelDetailController> {
               sliver: SliverList.list(
                 children: [
                   _MainInfoCard(parcel: parcel),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(48),
+                      side: const BorderSide(
+                          color: AppColors.primary, width: 1.4),
+                      foregroundColor: AppColors.primary,
+                      textStyle: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w700),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: () => Get.toNamed(Routes.compare),
+                    icon: const Icon(Icons.balance_outlined, size: 20),
+                    label: Text('compare_with_other'.tr),
+                  ),
                   if (parcel.owners.isNotEmpty) ...[
                     const SizedBox(height: 12),
                     _Section(

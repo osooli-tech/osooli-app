@@ -4,6 +4,8 @@ import '../features/auth/presentation/bindings/auth_binding.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/otp_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
+import '../features/compare/presentation/bindings/compare_binding.dart';
+import '../features/compare/presentation/pages/compare_page.dart';
 import '../features/onboarding/presentation/bindings/onboarding_binding.dart';
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../features/parcels/presentation/bindings/parcels_bindings.dart';
@@ -20,6 +22,7 @@ class Routes {
   static const home = '/home';
   static const parcels = '/parcels';
   static const parcelDetail = '/parcel-detail';
+  static const compare = '/compare';
 }
 
 class AppPages {
@@ -60,6 +63,11 @@ class AppPages {
       name: Routes.parcelDetail,
       page: () => const ParcelDetailPage(),
       binding: ParcelDetailBinding(),
+    ),
+    GetPage(
+      name: Routes.compare,
+      page: () => const ComparePage(),
+      binding: CompareBinding(),
     ),
   ];
 }

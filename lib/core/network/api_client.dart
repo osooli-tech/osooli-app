@@ -25,12 +25,44 @@ class ApiClient {
   Future<Map<String, dynamic>> get(String path, {Map<String, String>? query}) =>
       _send('GET', path, query: query);
 
+  /// Fetches a binary file (follows the 302 redirect to storage).
+  /// Returns the raw bytes; throws [ApiException] on failure.
+  Future<List<int>> getBytes(String path) async {
+    final token = await _tokenStorage.token;
+    http.Response response;
+    try {
+      response = await _http.get(
+        Uri.parse('$baseUrl$path'),
+        headers: {
+          'Accept': '*/*',
+          'Accept-Language': 'ar',
+          if (token != null) 'Authorization': 'Bearer $token',
+        },
+      ).timeout(const Duration(seconds: 60));
+    } on SocketException {
+      throw const ApiException.network();
+    } on TimeoutException {
+      throw const ApiException.network();
+    } on http.ClientException {
+      throw const ApiException.network();
+    }
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return response.bodyBytes;
+    }
+    if (response.statusCode == 401) onUnauthorized?.call();
+    throw ApiException.fromResponse(response.statusCode, null);
+  }
+
   Future<Map<String, dynamic>> post(
     String path, {
     Map<String, dynamic>? body,
     bool authorized = true,
   }) =>
       _send('POST', path, body: body, authorized: authorized);
+
+  Future<Map<String, dynamic>> patch(String path, {Map<String, dynamic>? body}) =>
+      _send('PATCH', path, body: body);
 
   Future<Map<String, dynamic>> _send(
     String method,

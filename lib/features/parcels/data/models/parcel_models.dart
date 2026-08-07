@@ -173,6 +173,9 @@ class ParcelDetailModel extends ParcelDetail {
   /// GeoJSON MultiPolygon coordinates are
   /// polygons -> rings -> positions([lng, lat]). Keeps each polygon's outer
   /// ring only — holes are irrelevant at this zoom level.
+  static List<List<LatLng>> parseMultiPolygon(Object? geometry) =>
+      _parseMultiPolygon(geometry);
+
   static List<List<LatLng>> _parseMultiPolygon(Object? geometry) {
     if (geometry is! Map<String, dynamic>) return const [];
     final coordinates = geometry['coordinates'];

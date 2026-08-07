@@ -102,6 +102,38 @@ class DashboardTab extends GetView<DashboardController> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
               sliver: SliverList.list(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Text(
+                      'quick_access'.tr,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _QuickAction(
+                          icon: Icons.holiday_village_outlined,
+                          label: 'nav_parcels'.tr,
+                          onTap: () => Get.toNamed(Routes.parcels),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _QuickAction(
+                          icon: Icons.balance_outlined,
+                          label: 'compare_title'.tr,
+                          onTap: () => Get.toNamed(Routes.compare),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
                   SimpleBarChart(
                     title: 'by_city_title'.tr,
                     entries: [
@@ -125,6 +157,59 @@ class DashboardTab extends GetView<DashboardController> {
         ),
       );
     });
+  }
+}
+
+class _QuickAction extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _QuickAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.fieldFill, width: 1.2),
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 46,
+                height: 46,
+                decoration: const BoxDecoration(
+                  color: AppColors.tealSoft,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: AppColors.teal, size: 24),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

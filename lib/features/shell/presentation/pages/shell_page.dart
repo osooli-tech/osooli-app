@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../compare/presentation/pages/compare_tab.dart';
+import '../../../account/presentation/pages/account_tab.dart';
 import '../../../dashboard/presentation/pages/dashboard_tab.dart';
-import '../../../parcels/presentation/widgets/parcels_list_view.dart';
+import '../../../deeds/presentation/pages/deeds_tab.dart';
+import '../../../map/presentation/pages/map_tab.dart';
+import '../../../search/presentation/pages/search_tab.dart';
 import '../controllers/shell_controller.dart';
-import 'more_tab.dart';
 
 class ShellPage extends GetView<ShellController> {
   const ShellPage({super.key});
@@ -19,9 +20,10 @@ class ShellPage extends GetView<ShellController> {
           index: controller.currentIndex.value,
           children: const [
             DashboardTab(),
-            ParcelsListView(),
-            CompareTab(),
-            MoreTab(),
+            MapTab(),
+            DeedsTab(),
+            SearchTab(),
+            AccountTab(),
           ],
         ),
         bottomNavigationBar: NavigationBar(
@@ -36,21 +38,25 @@ class ShellPage extends GetView<ShellController> {
               label: 'nav_home'.tr,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.holiday_village_outlined),
-              selectedIcon:
-                  const Icon(Icons.holiday_village, color: AppColors.teal),
-              label: 'nav_parcels'.tr,
+              icon: const Icon(Icons.map_outlined),
+              selectedIcon: const Icon(Icons.map, color: AppColors.teal),
+              label: 'nav_map'.tr,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.balance_outlined),
-              selectedIcon: const Icon(Icons.balance, color: AppColors.teal),
-              label: 'nav_compare'.tr,
+              icon: const Icon(Icons.description_outlined),
+              selectedIcon:
+                  const Icon(Icons.description, color: AppColors.teal),
+              label: 'nav_deeds'.tr,
             ),
             NavigationDestination(
-              icon: const Icon(Icons.more_horiz),
-              selectedIcon:
-                  const Icon(Icons.more_horiz, color: AppColors.teal),
-              label: 'nav_more'.tr,
+              icon: const Icon(Icons.search_outlined),
+              selectedIcon: const Icon(Icons.search, color: AppColors.teal),
+              label: 'nav_search'.tr,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.person_outline),
+              selectedIcon: const Icon(Icons.person, color: AppColors.teal),
+              label: 'nav_account'.tr,
             ),
           ],
         ),
