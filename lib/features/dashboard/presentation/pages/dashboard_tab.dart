@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/app_error_view.dart';
+import '../../../../routes/app_pages.dart';
 import '../../../../core/widgets/simple_bar_chart.dart';
 import '../../../../core/widgets/stat_card.dart';
 import '../../domain/entities/dashboard_data.dart';
@@ -52,6 +53,7 @@ class DashboardTab extends GetView<DashboardController> {
                     label: 'stat_parcels_total'.tr,
                     value: '${data.stats.parcelsTotal}',
                     icon: Icons.holiday_village_outlined,
+                    onTap: () => Get.toNamed(Routes.parcels),
                   ),
                   StatCard(
                     label: 'stat_deeds_active'.tr,

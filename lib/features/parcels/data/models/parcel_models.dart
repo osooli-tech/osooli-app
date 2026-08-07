@@ -14,6 +14,8 @@ class ParcelSummaryModel extends ParcelSummary {
     super.areaSqm,
     super.deedStatus,
     super.deedDateHijri,
+    super.deedNo,
+    super.documentsCount,
   });
 
   factory ParcelSummaryModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,8 @@ class ParcelSummaryModel extends ParcelSummary {
       areaSqm: (json['area_sqm'] as num?)?.toDouble(),
       deedStatus: deed?['deed_status'] as String?,
       deedDateHijri: deed?['deed_date_hijri'] as String?,
+      deedNo: deed?['deed_no']?.toString(),
+      documentsCount: (json['documents_count'] as num?)?.toInt(),
     );
   }
 }
@@ -43,19 +47,31 @@ class ParcelDetailModel extends ParcelDetail {
     super.areaSqm,
     super.deedStatus,
     super.deedDateHijri,
+    super.deedNo,
+    super.documentsCount,
+    super.geoId,
+    super.landTransaction,
+    super.allocationMethod,
+    super.fallIn,
     super.polygons,
     super.centroid,
+    super.owners,
+    super.deeds,
+    super.boundary,
+    super.surveyDecision,
+    super.documents,
   });
 
   factory ParcelDetailModel.fromJson(Map<String, dynamic> json) {
-    // The detail endpoint nests deed info in a `deeds` array (is_current
-    // marks the active one) rather than `current_deed`.
     final deeds = (json['deeds'] as List<dynamic>? ?? const [])
         .whereType<Map<String, dynamic>>()
+        .map(_deed)
         .toList();
     final current = deeds.firstWhere(
-      (d) => d['is_current'] == true,
-      orElse: () => deeds.isEmpty ? const {} : deeds.first,
+      (d) => d.isCurrent,
+      orElse: () => deeds.isEmpty
+          ? const ParcelDeed(id: 0, deedNo: '')
+          : deeds.first,
     );
 
     final centroidJson = json['centroid'] as Map<String, dynamic>?;
@@ -73,12 +89,85 @@ class ParcelDetailModel extends ParcelDetail {
       planNo: json['plan_no']?.toString(),
       city: json['city'] as String?,
       district: json['district'] as String?,
-      areaSqm: (current['deed_area_sqm'] as num?)?.toDouble(),
-      deedStatus: current['deed_status'] as String?,
-      deedDateHijri: current['deed_date_hijri'] as String?,
+      areaSqm: current.areaSqm,
+      deedStatus: current.status,
+      deedDateHijri: current.dateHijri,
+      deedNo: current.id == 0 ? null : current.deedNo,
+      geoId: json['geo_id']?.toString(),
+      landTransaction: json['land_transaction'] as String?,
+      allocationMethod: json['allocation_method'] as String?,
+      fallIn: json['fall_in'] as String?,
       polygons: _parseMultiPolygon(json['geometry']),
       centroid: centroid,
+      owners: (json['owners'] as List<dynamic>? ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .map((row) => ParcelOwner(
+                id: (row['id'] as num?)?.toInt() ?? 0,
+                name: row['name'] as String? ?? '',
+                nationalId: row['national_id']?.toString(),
+                ownershipShare: row['ownership_share']?.toString(),
+              ))
+          .toList(),
+      deeds: deeds,
+      boundary: _boundary(json['boundary']),
+      surveyDecision: _surveyDecision(json['survey_decision']),
+      documents: (json['documents'] as List<dynamic>? ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .map((row) => ParcelDocument(
+                id: (row['id'] as num?)?.toInt() ?? 0,
+                type: row['type'] as String?,
+                fileType: row['file_type'] as String?,
+                downloadUrl: row['download_url'] as String?,
+                createdAt: row['created_at'] as String?,
+              ))
+          .toList(),
     );
+  }
+
+  static ParcelDeed _deed(Map<String, dynamic> row) => ParcelDeed(
+        id: (row['id'] as num?)?.toInt() ?? 0,
+        deedNo: row['deed_no']?.toString() ?? '',
+        dateHijri: row['deed_date_hijri'] as String?,
+        areaSqm: (row['deed_area_sqm'] as num?)?.toDouble(),
+        status: row['deed_status'] as String?,
+        deedClass: row['deed_class'] as String?,
+        isCurrent: row['is_current'] == true,
+      );
+
+  static ParcelBoundary? _boundary(Object? value) {
+    if (value is! Map<String, dynamic>) return null;
+
+    BoundarySide? side(Object? raw) {
+      if (raw is! Map<String, dynamic>) return null;
+      return BoundarySide(
+        description: raw['description'] as String?,
+        lengthM: (raw['length_m'] as num?)?.toDouble(),
+      );
+    }
+
+    final boundary = ParcelBoundary(
+      north: side(value['north']),
+      south: side(value['south']),
+      east: side(value['east']),
+      west: side(value['west']),
+      measuredAreaSqm: (value['measured_area_sqm'] as num?)?.toDouble(),
+      matchesDeed: value['matches_deed'] as bool?,
+      engineeringOffice: value['engineering_office'] as String?,
+    );
+    return boundary.isEmpty && boundary.engineeringOffice == null
+        ? null
+        : boundary;
+  }
+
+  static SurveyDecision? _surveyDecision(Object? value) {
+    if (value is! Map<String, dynamic>) return null;
+    final decision = SurveyDecision(
+      qrarNo: value['qrar_no']?.toString(),
+      reportNo: value['report_no']?.toString(),
+      source: value['qrar_source'] as String?,
+      folder: value['folder'] as String?,
+    );
+    return decision.isEmpty ? null : decision;
   }
 
   /// GeoJSON MultiPolygon coordinates are

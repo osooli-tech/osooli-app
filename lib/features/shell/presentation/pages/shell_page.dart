@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../compare/presentation/pages/compare_tab.dart';
 import '../../../dashboard/presentation/pages/dashboard_tab.dart';
+import '../../../parcels/presentation/widgets/parcels_list_view.dart';
 import '../controllers/shell_controller.dart';
 import 'more_tab.dart';
-import 'placeholder_tab.dart';
 
 class ShellPage extends GetView<ShellController> {
   const ShellPage({super.key});
@@ -19,7 +19,7 @@ class ShellPage extends GetView<ShellController> {
           index: controller.currentIndex.value,
           children: const [
             DashboardTab(),
-            PlaceholderTab(),
+            SafeArea(child: ParcelsListView()),
             CompareTab(),
             MoreTab(),
           ],

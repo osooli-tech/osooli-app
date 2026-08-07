@@ -8,6 +8,8 @@ class ParcelSummary {
   final double? areaSqm;
   final String? deedStatus;
   final String? deedDateHijri;
+  final String? deedNo;
+  final int? documentsCount;
 
   const ParcelSummary({
     required this.id,
@@ -19,5 +21,7 @@ class ParcelSummary {
     this.areaSqm,
     this.deedStatus,
     this.deedDateHijri,
+    this.deedNo,
+    this.documentsCount,
   });
 }
