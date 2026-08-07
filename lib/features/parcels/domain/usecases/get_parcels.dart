@@ -10,6 +10,8 @@ class GetParcels {
     int page = 1,
     int perPage = 20,
     String? search,
+    String? city,
   }) =>
-      repository.getParcels(page: page, perPage: perPage, search: search);
+      repository.getParcels(
+          page: page, perPage: perPage, search: search, city: city);
 }

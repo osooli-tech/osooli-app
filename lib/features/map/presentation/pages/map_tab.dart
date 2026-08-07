@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/map_config.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../parcels/domain/entities/map_feature.dart';
@@ -11,10 +12,6 @@ import '../controllers/map_controller.dart';
 
 class MapTab extends GetView<ParcelsMapController> {
   const MapTab({super.key});
-
-  static const _standardTiles = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-  static const _satelliteTiles =
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +52,8 @@ class MapTab extends GetView<ParcelsMapController> {
               TileLayer(
                 urlTemplate:
                     controller.layerMode.value == MapLayerMode.satellite
-                        ? _satelliteTiles
-                        : _standardTiles,
+                        ? MapConfig.satelliteTiles
+                        : MapConfig.standardTiles,
                 userAgentPackageName: 'com.osooli.app',
               ),
               PolygonLayer(
@@ -66,13 +63,13 @@ class MapTab extends GetView<ParcelsMapController> {
                       Polygon(
                         points: ring,
                         color: feature.id == selected?.id
-                            ? AppColors.teal.withValues(alpha: .65)
-                            : AppColors.teal.withValues(alpha: .35),
+                            ? AppColors.mapGreen.withValues(alpha: .55)
+                            : AppColors.mapGreenFill,
                         borderColor: feature.id == selected?.id
                             ? Colors.white
-                            : AppColors.teal,
+                            : AppColors.mapGreen,
                         borderStrokeWidth:
-                            feature.id == selected?.id ? 3.5 : 2,
+                            feature.id == selected?.id ? 4 : 2.5,
                       ),
                 ],
               ),

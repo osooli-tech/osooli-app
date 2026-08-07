@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../routes/app_pages.dart';
+import '../../../deeds/presentation/controllers/deeds_controller.dart';
+import '../../../shell/presentation/controllers/shell_controller.dart';
 import '../../../../core/widgets/simple_bar_chart.dart';
 import '../../../../core/widgets/stat_card.dart';
 import '../../domain/entities/dashboard_data.dart';
@@ -11,6 +13,12 @@ import '../controllers/dashboard_controller.dart';
 
 class DashboardTab extends GetView<DashboardController> {
   const DashboardTab({super.key});
+
+  /// Jumps to the deeds tab with the given API status filter applied.
+  void _openDeeds(String status) {
+    Get.find<DeedsController>().setStatusFilter(status);
+    Get.find<ShellController>().changeTab(2);
+  }
 
   String _formatArea(double sqm) {
     if (sqm >= 1000000) {
@@ -60,6 +68,7 @@ class DashboardTab extends GetView<DashboardController> {
                     value: '${data.stats.deedsActive}',
                     icon: Icons.verified_outlined,
                     color: AppColors.accent,
+                    onTap: () => _openDeeds('active'),
                   ),
                   StatCard(
                     label: 'stat_total_area'.tr,
@@ -71,29 +80,37 @@ class DashboardTab extends GetView<DashboardController> {
                     value: '${data.stats.surveyDecisionsTotal}',
                     icon: Icons.edit_note,
                     color: AppColors.gold,
+                    onTap: () => Get.toNamed(Routes.surveyDecisions),
                   ),
                   StatCard(
                     label: 'stat_deeds_expired'.tr,
                     value: '${data.stats.deedsExpired}',
                     icon: Icons.history_toggle_off,
                     color: AppColors.error,
+                    onTap: () => _openDeeds('expired'),
                   ),
                   StatCard(
                     label: 'stat_without_deed'.tr,
                     value: '${data.stats.parcelsWithoutDeed}',
                     icon: Icons.article_outlined,
                     color: AppColors.gold,
+                    onTap: () => Get.toNamed(
+                      Routes.parcels,
+                      arguments: {'status': 'none'},
+                    ),
                   ),
                   StatCard(
                     label: 'stat_cities'.tr,
                     value: '${data.stats.citiesCount}',
                     icon: Icons.location_city_outlined,
+                    onTap: () => Get.toNamed(Routes.cities),
                   ),
                   StatCard(
                     label: 'stat_documents'.tr,
                     value: '${data.stats.documentsCount}',
                     icon: Icons.folder_open_outlined,
                     color: AppColors.accent,
+                    onTap: () => Get.toNamed(Routes.documents),
                   ),
                 ],
               ),
@@ -129,6 +146,14 @@ class DashboardTab extends GetView<DashboardController> {
                           icon: Icons.balance_outlined,
                           label: 'compare_title'.tr,
                           onTap: () => Get.toNamed(Routes.compare),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _QuickAction(
+                          icon: Icons.edit_note,
+                          label: 'my_requests'.tr,
+                          onTap: () => Get.toNamed(Routes.requests),
                         ),
                       ),
                     ],

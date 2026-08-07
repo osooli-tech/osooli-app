@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart' as ll;
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/map_config.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../parcels/domain/entities/parcel_detail.dart';
 import '../../../parcels/domain/entities/parcel_summary.dart';
@@ -286,7 +287,7 @@ class _CompareMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allPoints = <LatLng>[
+    final allPoints = <ll.LatLng>[
       for (final ring in a.polygons) ...ring,
       for (final ring in b.polygons) ...ring,
       if (a.polygons.isEmpty && a.centroid != null) a.centroid!,
@@ -322,7 +323,7 @@ class _CompareMap extends StatelessWidget {
               ),
               children: [
                 TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  urlTemplate: MapConfig.standardTiles,
                   userAgentPackageName: 'com.osooli.app',
                 ),
                 PolygonLayer(
@@ -332,14 +333,14 @@ class _CompareMap extends StatelessWidget {
                         points: ring,
                         color: AppColors.teal.withValues(alpha: .35),
                         borderColor: AppColors.teal,
-                        borderStrokeWidth: 2.5,
+                        borderStrokeWidth: 3,
                       ),
                     for (final ring in b.polygons)
                       Polygon(
                         points: ring,
                         color: AppColors.primary.withValues(alpha: .35),
                         borderColor: AppColors.primary,
-                        borderStrokeWidth: 2.5,
+                        borderStrokeWidth: 3,
                       ),
                   ],
                 ),

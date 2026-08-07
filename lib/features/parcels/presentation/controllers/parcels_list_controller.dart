@@ -16,13 +16,22 @@ class ParcelsListController extends GetxController {
   final error = RxnString();
   final searchQuery = ''.obs;
 
-  /// Client-side deed-status filter — null means all. The parcels endpoint
-  /// has no status parameter, so this filters the loaded list.
+  /// Client-side deed-status filter — null means all, 'none' means parcels
+  /// without a deed. The parcels endpoint has no status parameter, so this
+  /// filters the loaded list.
   final statusFilter = RxnString();
 
-  List<ParcelSummary> get filtered => statusFilter.value == null
-      ? items
-      : items.where((p) => p.deedStatus == statusFilter.value).toList();
+  /// Server-side city filter, set when opened from the cities page.
+  final cityFilter = RxnString();
+
+  List<ParcelSummary> get filtered {
+    final status = statusFilter.value;
+    if (status == null) return items;
+    if (status == 'none') {
+      return items.where((p) => p.deedStatus == null).toList();
+    }
+    return items.where((p) => p.deedStatus == status).toList();
+  }
 
   void setStatusFilter(String? status) => statusFilter.value = status;
 
@@ -35,6 +44,9 @@ class ParcelsListController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    final args = (Get.arguments as Map?) ?? {};
+    cityFilter.value = args['city'] as String?;
+    statusFilter.value = args['status'] as String?;
     fetch();
   }
 
@@ -46,6 +58,7 @@ class ParcelsListController extends GetxController {
       final page = await getParcels(
         page: _page,
         search: searchQuery.value.isEmpty ? null : searchQuery.value,
+        city: cityFilter.value,
       );
       items.assignAll(page.items);
       _hasMore = page.hasMore;
@@ -63,6 +76,7 @@ class ParcelsListController extends GetxController {
       final page = await getParcels(
         page: _page + 1,
         search: searchQuery.value.isEmpty ? null : searchQuery.value,
+        city: cityFilter.value,
       );
       _page++;
       items.addAll(page.items);

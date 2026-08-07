@@ -6,11 +6,16 @@ import '../features/auth/presentation/pages/otp_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/compare/presentation/bindings/compare_binding.dart';
 import '../features/compare/presentation/pages/compare_page.dart';
+import '../features/dashboard/presentation/pages/cities_page.dart';
 import '../features/onboarding/presentation/bindings/onboarding_binding.dart';
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../features/parcels/presentation/bindings/parcels_bindings.dart';
+import '../features/parcels/presentation/pages/documents_page.dart';
 import '../features/parcels/presentation/pages/parcel_detail_page.dart';
 import '../features/parcels/presentation/pages/parcels_page.dart';
+import '../features/parcels/presentation/pages/survey_decisions_page.dart';
+import '../features/requests/presentation/bindings/requests_binding.dart';
+import '../features/requests/presentation/pages/requests_page.dart';
 import '../features/shell/presentation/bindings/shell_binding.dart';
 import '../features/shell/presentation/pages/shell_page.dart';
 
@@ -23,6 +28,10 @@ class Routes {
   static const parcels = '/parcels';
   static const parcelDetail = '/parcel-detail';
   static const compare = '/compare';
+  static const requests = '/requests';
+  static const cities = '/cities';
+  static const surveyDecisions = '/survey-decisions';
+  static const documents = '/documents';
 }
 
 class AppPages {
@@ -68,6 +77,25 @@ class AppPages {
       name: Routes.compare,
       page: () => const ComparePage(),
       binding: CompareBinding(),
+    ),
+    GetPage(
+      name: Routes.requests,
+      page: () => const RequestsPage(),
+      binding: RequestsBinding(),
+    ),
+    GetPage(
+      name: Routes.cities,
+      page: () => const CitiesPage(),
+    ),
+    GetPage(
+      name: Routes.surveyDecisions,
+      page: () => const SurveyDecisionsPage(),
+      binding: ParcelAggregatesBinding(),
+    ),
+    GetPage(
+      name: Routes.documents,
+      page: () => const DocumentsPage(),
+      binding: ParcelAggregatesBinding(),
     ),
   ];
 }

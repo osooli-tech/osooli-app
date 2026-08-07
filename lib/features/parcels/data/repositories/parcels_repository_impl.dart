@@ -17,11 +17,13 @@ class ParcelsRepositoryImpl implements ParcelsRepository {
     int page = 1,
     int perPage = 20,
     String? search,
+    String? city,
   }) async {
     final res = await client.get(ApiEndpoints.parcels, query: {
       'page': '$page',
       'per_page': '$perPage',
       if (search != null && search.isNotEmpty) 'search': search,
+      if (city != null && city.isNotEmpty) 'city': city,
     });
     return PaginatedData.fromJson(res, ParcelSummaryModel.fromJson);
   }

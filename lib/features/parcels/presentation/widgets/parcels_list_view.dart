@@ -118,12 +118,16 @@ class _Header extends GetView<ParcelsListController> {
                   icon: const Icon(Icons.arrow_forward, color: Colors.white),
                 ),
               if (showBack) const SizedBox(width: 8),
-              Text(
-                'nav_parcels'.tr,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+              Obx(
+                () => Text(
+                  controller.cityFilter.value == null
+                      ? 'nav_parcels'.tr
+                      : '${'nav_parcels'.tr} — ${controller.cityFilter.value}',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
@@ -179,6 +183,12 @@ class _Header extends GetView<ParcelsListController> {
                     label: 'filter_old'.tr,
                     selected: controller.statusFilter.value == 'قديم',
                     onTap: () => controller.setStatusFilter('قديم'),
+                  ),
+                  const SizedBox(width: 8),
+                  _FilterChip(
+                    label: 'no_deed'.tr,
+                    selected: controller.statusFilter.value == 'none',
+                    onTap: () => controller.setStatusFilter('none'),
                   ),
                 ],
               ),

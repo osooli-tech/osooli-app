@@ -11,6 +11,8 @@ import '../../features/deeds/data/repositories/deeds_repository_impl.dart';
 import '../../features/deeds/domain/repositories/deeds_repository.dart';
 import '../../features/parcels/data/repositories/parcels_repository_impl.dart';
 import '../../features/parcels/domain/repositories/parcels_repository.dart';
+import '../../features/requests/data/repositories/requests_repository_impl.dart';
+import '../../features/requests/domain/repositories/requests_repository.dart';
 import '../../features/search/data/repositories/search_repository_impl.dart';
 import '../../features/search/domain/repositories/search_repository.dart';
 import '../../routes/app_pages.dart';
@@ -59,6 +61,10 @@ class InitialBinding extends Bindings {
     );
     Get.put<ProfileRepository>(
       ProfileRepositoryImpl(Get.find<ApiClient>()),
+      permanent: true,
+    );
+    Get.put<RequestsRepository>(
+      RequestsRepositoryImpl(Get.find<ApiClient>()),
       permanent: true,
     );
     Get.put(DocumentService(Get.find<ApiClient>()), permanent: true);

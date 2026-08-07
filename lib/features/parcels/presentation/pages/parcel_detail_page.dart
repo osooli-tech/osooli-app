@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:latlong2/latlong.dart' as ll;
+
+import '../../../../core/constants/map_config.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../routes/app_pages.dart';
+import '../../../requests/domain/repositories/requests_repository.dart';
+import '../../../requests/domain/usecases/create_request.dart';
+import '../../../requests/presentation/widgets/new_request_sheet.dart';
 import '../../domain/entities/parcel_detail.dart';
 import '../controllers/parcel_detail_controller.dart';
 import '../widgets/deed_status_chip.dart';
@@ -66,21 +71,47 @@ class ParcelDetailPage extends GetView<ParcelDetailController> {
                 children: [
                   _MainInfoCard(parcel: parcel),
                   const SizedBox(height: 12),
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(48),
-                      side: const BorderSide(
-                          color: AppColors.primary, width: 1.4),
-                      foregroundColor: AppColors.primary,
-                      textStyle: const TextStyle(
-                          fontSize: 15, fontWeight: FontWeight.w700),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(48),
+                            side: const BorderSide(
+                                color: AppColors.primary, width: 1.4),
+                            foregroundColor: AppColors.primary,
+                            textStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w700),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          onPressed: () => Get.toNamed(Routes.compare),
+                          icon: const Icon(Icons.balance_outlined, size: 19),
+                          label: Text('compare_short'.tr),
+                        ),
                       ),
-                    ),
-                    onPressed: () => Get.toNamed(Routes.compare),
-                    icon: const Icon(Icons.balance_outlined, size: 20),
-                    label: Text('compare_with_other'.tr),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.teal,
+                            minimumSize: const Size.fromHeight(48),
+                            textStyle: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w700),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          onPressed: () => NewRequestSheet.show(
+                            parcel,
+                            CreateRequest(Get.find<RequestsRepository>()),
+                          ),
+                          icon: const Icon(Icons.edit_note, size: 20),
+                          label: Text('request_modification'.tr),
+                        ),
+                      ),
+                    ],
                   ),
                   if (parcel.owners.isNotEmpty) ...[
                     const SizedBox(height: 12),
@@ -115,27 +146,7 @@ class ParcelDetailPage extends GetView<ParcelDetailController> {
                     _Section(
                       title: 'boundary_title'.tr,
                       icon: Icons.crop_free,
-                      child: Column(
-                        children: [
-                          _BoundaryRow(
-                              label: 'boundary_north'.tr,
-                              side: parcel.boundary!.north),
-                          _BoundaryRow(
-                              label: 'boundary_south'.tr,
-                              side: parcel.boundary!.south),
-                          _BoundaryRow(
-                              label: 'boundary_east'.tr,
-                              side: parcel.boundary!.east),
-                          _BoundaryRow(
-                              label: 'boundary_west'.tr,
-                              side: parcel.boundary!.west),
-                          if (parcel.boundary!.engineeringOffice != null)
-                            _KeyValueRow(
-                              label: 'engineering_office'.tr,
-                              value: parcel.boundary!.engineeringOffice!,
-                            ),
-                        ],
-                      ),
+                      child: _BoundaryCompass(boundary: parcel.boundary!),
                     ),
                   ],
                   if (parcel.surveyDecision != null) ...[
@@ -173,10 +184,7 @@ class ParcelDetailPage extends GetView<ParcelDetailController> {
                       child: Column(
                         children: [
                           for (final doc in parcel.documents)
-                            _KeyValueRow(
-                              label: doc.type ?? 'document'.tr,
-                              value: (doc.fileType ?? '').toUpperCase(),
-                            ),
+                            _DocumentRow(document: doc),
                         ],
                       ),
                     ),
@@ -198,7 +206,7 @@ class _ParcelMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final points = <LatLng>[
+    final points = <ll.LatLng>[
       for (final ring in parcel.polygons) ...ring,
       if (parcel.polygons.isEmpty && parcel.centroid != null) parcel.centroid!,
     ];
@@ -222,7 +230,7 @@ class _ParcelMap extends StatelessWidget {
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          urlTemplate: MapConfig.standardTiles,
           userAgentPackageName: 'com.osooli.app',
         ),
         PolygonLayer(
@@ -230,9 +238,9 @@ class _ParcelMap extends StatelessWidget {
             for (final ring in parcel.polygons)
               Polygon(
                 points: ring,
-                color: AppColors.teal.withValues(alpha: .35),
-                borderColor: AppColors.teal,
-                borderStrokeWidth: 3,
+                color: AppColors.mapGreenFill,
+                borderColor: AppColors.mapGreen,
+                borderStrokeWidth: 3.5,
               ),
           ],
         ),
@@ -242,7 +250,7 @@ class _ParcelMap extends StatelessWidget {
               Marker(
                 point: parcel.centroid!,
                 child: const Icon(Icons.location_on,
-                    color: AppColors.teal, size: 36),
+                    color: AppColors.mapGreen, size: 36),
               ),
             ],
           ),
@@ -439,21 +447,200 @@ class _DeedRow extends StatelessWidget {
   }
 }
 
-class _BoundaryRow extends StatelessWidget {
-  final String label;
-  final BoundarySide? side;
-  const _BoundaryRow({required this.label, required this.side});
+class _DocumentRow extends GetView<ParcelDetailController> {
+  final ParcelDocument document;
+  const _DocumentRow({required this.document});
 
   @override
   Widget build(BuildContext context) {
-    if (side == null) return const SizedBox.shrink();
-    final length = side!.lengthM;
-    return _KeyValueRow(
-      label: label,
-      value: [
-        if (side!.description != null) side!.description!,
-        if (length != null) '(${length.toStringAsFixed(0)} م)',
-      ].join(' '),
+    return Obx(() {
+      final busy = controller.opening.contains(document.id);
+      return InkWell(
+        onTap: busy ? null : () => controller.openDocument(document),
+        borderRadius: BorderRadius.circular(10),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppColors.tealSoft,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  (document.fileType ?? '') == 'pdf'
+                      ? Icons.picture_as_pdf_outlined
+                      : Icons.image_outlined,
+                  color: AppColors.teal,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      document.type ?? 'document'.tr,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    Text(
+                      (document.fileType ?? '').toUpperCase(),
+                      style: const TextStyle(
+                          fontSize: 11.5, color: AppColors.textSoft),
+                    ),
+                  ],
+                ),
+              ),
+              busy
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2.2),
+                    )
+                  : const Icon(Icons.download_rounded,
+                      color: AppColors.teal, size: 22),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+}
+
+/// Boundaries laid out like the web dashboard: north on top, west/east at
+/// the sides, south at the bottom, with a north-pointing compass in the
+/// middle. Lengths render in green under each description.
+class _BoundaryCompass extends StatelessWidget {
+  final ParcelBoundary boundary;
+  const _BoundaryCompass({required this.boundary});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 48),
+          child:
+              _BoundaryBox(label: 'boundary_north'.tr, side: boundary.north),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child:
+                  _BoundaryBox(label: 'boundary_west'.tr, side: boundary.west),
+            ),
+            const SizedBox(width: 8),
+            const _NorthCompass(),
+            const SizedBox(width: 8),
+            Expanded(
+              child:
+                  _BoundaryBox(label: 'boundary_east'.tr, side: boundary.east),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 48),
+          child:
+              _BoundaryBox(label: 'boundary_south'.tr, side: boundary.south),
+        ),
+        if (boundary.engineeringOffice != null) ...[
+          const SizedBox(height: 14),
+          const Divider(height: 1, color: AppColors.fieldFill),
+          const SizedBox(height: 10),
+          _KeyValueRow(
+            label: 'engineering_office'.tr,
+            value: boundary.engineeringOffice!,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _NorthCompass extends StatelessWidget {
+  const _NorthCompass();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.navigation, color: AppColors.teal, size: 26),
+        const SizedBox(height: 2),
+        Text(
+          'north_letter'.tr,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: AppColors.teal,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BoundaryBox extends StatelessWidget {
+  final String label;
+  final BoundarySide? side;
+  const _BoundaryBox({required this.label, required this.side});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.blueSoft,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.blueLabel,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            side?.description ?? '—',
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 13.5,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
+            ),
+          ),
+          if (side?.lengthM != null) ...[
+            const SizedBox(height: 3),
+            Text(
+              '${side!.lengthM!.toStringAsFixed(2)} م',
+              style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                color: AppColors.accent,
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

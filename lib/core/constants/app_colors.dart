@@ -13,4 +13,10 @@ class AppColors {
   static const tealSoft = Color(0xFFE3F0EF);
   static const gold = Color(0xFFC49A3C);
   static const goldSoft = Color(0xFFFAF3E3);
+
+  // Parcel rendering on maps + boundary boxes, matching the web dashboard.
+  static const mapGreen = Color(0xFF22C55E);
+  static const mapGreenFill = Color(0x5980B79A);
+  static const blueSoft = Color(0xFFEAF1FF);
+  static const blueLabel = Color(0xFF3B82F6);
 }

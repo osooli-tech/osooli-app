@@ -8,6 +8,7 @@ abstract class ParcelsRepository {
     int page = 1,
     int perPage = 20,
     String? search,
+    String? city,
   });
 
   Future<ParcelDetail> getParcelDetail(int id);
