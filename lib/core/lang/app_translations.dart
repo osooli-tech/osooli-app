@@ -141,6 +141,11 @@ class AppTranslations extends Translations {
           'deed_class_label': 'Deed class',
           'no_data': 'No data',
           'parcel_count_unit': 'parcels',
+          'privacy_policy': 'Privacy Policy',
+          'terms_of_use': 'Terms of Use',
+          'last_updated': 'Last updated',
+          'login_consent': 'By continuing you agree to the ',
+          'and': 'and',
         },
         'ar_SA': {
           'skip': 'تخطي',
@@ -280,6 +285,11 @@ class AppTranslations extends Translations {
           'deed_class_label': 'تصنيف الصك',
           'no_data': 'لا توجد بيانات',
           'parcel_count_unit': 'قطعة',
+          'privacy_policy': 'سياسة الخصوصية',
+          'terms_of_use': 'شروط الاستخدام',
+          'last_updated': 'آخر تحديث',
+          'login_consent': 'بمتابعتك فأنت توافق على ',
+          'and': 'و',
         },
       };
 }

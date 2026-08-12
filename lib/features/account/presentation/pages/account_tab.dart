@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/app_error_view.dart';
+import '../../../../routes/app_pages.dart';
 import '../../domain/entities/owner_profile.dart';
 import '../controllers/account_controller.dart';
 import '../widgets/edit_contact_sheet.dart';
@@ -97,6 +98,24 @@ class AccountTab extends GetView<AccountController> {
                         'help_support'.tr,
                         'coming_soon'.tr,
                         snackPosition: SnackPosition.BOTTOM,
+                      ),
+                    ),
+                    const Divider(height: 1, color: AppColors.fieldFill),
+                    _MenuRow(
+                      icon: Icons.privacy_tip_outlined,
+                      label: 'privacy_policy'.tr,
+                      onTap: () => Get.toNamed(
+                        Routes.policy,
+                        arguments: {'type': 'privacy'},
+                      ),
+                    ),
+                    const Divider(height: 1, color: AppColors.fieldFill),
+                    _MenuRow(
+                      icon: Icons.gavel_outlined,
+                      label: 'terms_of_use'.tr,
+                      onTap: () => Get.toNamed(
+                        Routes.policy,
+                        arguments: {'type': 'terms'},
                       ),
                     ),
                     const Divider(height: 1, color: AppColors.fieldFill),

@@ -7,6 +7,7 @@ import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/compare/presentation/bindings/compare_binding.dart';
 import '../features/compare/presentation/pages/compare_page.dart';
 import '../features/dashboard/presentation/pages/cities_page.dart';
+import '../features/legal/presentation/pages/policy_page.dart';
 import '../features/onboarding/presentation/bindings/onboarding_binding.dart';
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../features/parcels/presentation/bindings/parcels_bindings.dart';
@@ -32,6 +33,7 @@ class Routes {
   static const cities = '/cities';
   static const surveyDecisions = '/survey-decisions';
   static const documents = '/documents';
+  static const policy = '/policy';
 }
 
 class AppPages {
@@ -96,6 +98,10 @@ class AppPages {
       name: Routes.documents,
       page: () => const DocumentsPage(),
       binding: ParcelAggregatesBinding(),
+    ),
+    GetPage(
+      name: Routes.policy,
+      page: () => const PolicyPage(),
     ),
   ];
 }
