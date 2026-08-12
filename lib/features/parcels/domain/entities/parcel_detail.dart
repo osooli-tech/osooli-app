@@ -118,6 +118,8 @@ class ParcelDetail extends ParcelSummary {
     super.city,
     super.district,
     super.areaSqm,
+    super.mPrice,
+    super.parcelPrice,
     super.deedStatus,
     super.deedDateHijri,
     super.deedNo,

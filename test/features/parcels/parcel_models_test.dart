@@ -12,6 +12,8 @@ void main() {
       'city': 'الدرعية',
       'district': 'الوصيل',
       'area_sqm': 3000,
+      'm_price': 1500,
+      'parcel_price': 4500000,
       'current_deed': {
         'id': 34,
         'deed_no': '396426002607',
@@ -22,6 +24,8 @@ void main() {
 
     expect(model.id, 34);
     expect(model.areaSqm, 3000.0);
+    expect(model.mPrice, 1500.0);
+    expect(model.parcelPrice, 4500000.0);
     expect(model.deedStatus, 'محدث');
     expect(model.deedDateHijri, '1443-03-28');
   });

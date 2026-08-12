@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart' as ll;
 import '../../../../core/constants/map_config.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/money_format.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../requests/domain/repositories/requests_repository.dart';
@@ -279,6 +280,16 @@ class _MainInfoCard extends StatelessWidget {
                 ? '—'
                 : '${parcel.areaSqm!.toStringAsFixed(0)} م²',
           ),
+          if (parcel.parcelPrice != null)
+            _KeyValueRow(
+              label: 'parcel_price_label'.tr,
+              value: '${formatMoney(parcel.parcelPrice!)} ${'sar'.tr}',
+            ),
+          if (parcel.mPrice != null)
+            _KeyValueRow(
+              label: 'm_price_label'.tr,
+              value: '${formatMoney(parcel.mPrice!)} ${'sar_per_sqm'.tr}',
+            ),
           _KeyValueRow(
             label: 'compare_location'.tr,
             value: [

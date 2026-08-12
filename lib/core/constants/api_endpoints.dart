@@ -17,4 +17,6 @@ class ApiEndpoints {
   static String documentDownload(int id) => '/documents/$id/download';
 
   static const modificationRequests = '/modification-requests';
+
+  static String legal(String key) => '/legal/$key';
 }

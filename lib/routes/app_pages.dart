@@ -7,6 +7,7 @@ import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/compare/presentation/bindings/compare_binding.dart';
 import '../features/compare/presentation/pages/compare_page.dart';
 import '../features/dashboard/presentation/pages/cities_page.dart';
+import '../features/legal/presentation/bindings/legal_binding.dart';
 import '../features/legal/presentation/pages/policy_page.dart';
 import '../features/onboarding/presentation/bindings/onboarding_binding.dart';
 import '../features/onboarding/presentation/pages/onboarding_page.dart';
@@ -102,6 +103,7 @@ class AppPages {
     GetPage(
       name: Routes.policy,
       page: () => const PolicyPage(),
+      binding: LegalBinding(),
     ),
   ];
 }

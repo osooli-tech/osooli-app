@@ -15,6 +15,12 @@ void main() {
         'cities_count': 1,
         'documents_count': 2,
       },
+      'portfolio': {
+        'total_value': 2750000.5,
+        'priced_parcels': 2,
+        'total_parcels': 3,
+        'avg_m_price': 1450,
+      },
       'by_city': [
         {'name': 'الدرعية', 'parcels_count': 2}
       ],
@@ -30,6 +36,10 @@ void main() {
     expect(model.byCity.single.name, 'الدرعية');
     expect(model.byDistrict.single.parcelsCount, 2);
     expect(model.unreadNotifications, 0);
+    expect(model.portfolio.totalValue, 2750000.5);
+    expect(model.portfolio.pricedParcels, 2);
+    expect(model.portfolio.totalParcels, 3);
+    expect(model.portfolio.avgMPrice, 1450.0);
   });
 
   test('tolerates missing fields', () {
@@ -37,5 +47,8 @@ void main() {
     expect(model.greetingName, '');
     expect(model.stats.parcelsTotal, 0);
     expect(model.byCity, isEmpty);
+    // No portfolio block (older API): total stays null so the card hides.
+    expect(model.portfolio.totalValue, isNull);
+    expect(model.portfolio.totalParcels, 0);
   });
 }

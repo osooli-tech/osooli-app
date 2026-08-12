@@ -6,6 +6,12 @@ class ParcelSummary {
   final String? city;
   final String? district;
   final double? areaSqm;
+
+  /// Estimated price per square meter (SAR), from the survey data source.
+  final double? mPrice;
+
+  /// Estimated total parcel value (SAR).
+  final double? parcelPrice;
   final String? deedStatus;
   final String? deedDateHijri;
   final String? deedNo;
@@ -19,6 +25,8 @@ class ParcelSummary {
     this.city,
     this.district,
     this.areaSqm,
+    this.mPrice,
+    this.parcelPrice,
     this.deedStatus,
     this.deedDateHijri,
     this.deedNo,

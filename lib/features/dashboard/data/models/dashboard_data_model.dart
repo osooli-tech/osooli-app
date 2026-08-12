@@ -4,6 +4,7 @@ class DashboardDataModel extends DashboardData {
   const DashboardDataModel({
     required super.greetingName,
     required super.stats,
+    super.portfolio,
     required super.byCity,
     required super.byDistrict,
     required super.unreadNotifications,
@@ -11,6 +12,7 @@ class DashboardDataModel extends DashboardData {
 
   factory DashboardDataModel.fromJson(Map<String, dynamic> json) {
     final stats = (json['stats'] as Map<String, dynamic>?) ?? const {};
+    final portfolio = (json['portfolio'] as Map<String, dynamic>?) ?? const {};
     return DashboardDataModel(
       greetingName: json['greeting_name'] as String? ?? '',
       stats: DashboardStats(
@@ -22,6 +24,12 @@ class DashboardDataModel extends DashboardData {
         areaTotalSqm: _double(stats['area_total_sqm']),
         citiesCount: _int(stats['cities_count']),
         documentsCount: _int(stats['documents_count']),
+      ),
+      portfolio: PortfolioSummary(
+        totalValue: (portfolio['total_value'] as num?)?.toDouble(),
+        pricedParcels: _int(portfolio['priced_parcels']),
+        totalParcels: _int(portfolio['total_parcels']),
+        avgMPrice: (portfolio['avg_m_price'] as num?)?.toDouble(),
       ),
       byCity: _counts(json['by_city']),
       byDistrict: _counts(json['by_district']),

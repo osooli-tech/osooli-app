@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/money_format.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../deeds/presentation/controllers/deeds_controller.dart';
@@ -49,6 +50,13 @@ class DashboardTab extends GetView<DashboardController> {
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(child: _Header(data: data)),
+            if (data.portfolio.totalValue != null)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                sliver: SliverToBoxAdapter(
+                  child: _PortfolioCard(portfolio: data.portfolio),
+                ),
+              ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               sliver: SliverGrid.count(
@@ -311,6 +319,93 @@ class _Header extends StatelessWidget {
                 ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Headline card with the estimated value of the owner's priced holdings.
+/// Only rendered when at least one parcel carries a price.
+class _PortfolioCard extends StatelessWidget {
+  final PortfolioSummary portfolio;
+  const _PortfolioCard({required this.portfolio});
+
+  @override
+  Widget build(BuildContext context) {
+    final avg = portfolio.avgMPrice;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [AppColors.primary, AppColors.teal],
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.account_balance_wallet_outlined,
+                  color: AppColors.gold, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'portfolio_value_title'.tr,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white70,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text.rich(
+            TextSpan(
+              text: formatMoney(portfolio.totalValue ?? 0),
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+              children: [
+                TextSpan(
+                  text: ' ${'sar'.tr}',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'portfolio_based_on'.trParams({
+              'priced': '${portfolio.pricedParcels}',
+              'total': '${portfolio.totalParcels}',
+            }),
+            style: const TextStyle(fontSize: 12, color: Colors.white60),
+          ),
+          if (avg != null) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '${'portfolio_avg_m_price'.tr}: ${formatMoney(avg)} ${'sar_per_sqm'.tr}',
+                style: const TextStyle(fontSize: 12, color: Colors.white),
+              ),
+            ),
+          ],
         ],
       ),
     );
