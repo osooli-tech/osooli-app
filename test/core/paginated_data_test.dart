@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/core/models/paginated_data.dart';
+import 'package:sakukiapp/core/models/paginated_data.dart';
 
 void main() {
   test('parses envelope with meta', () {

@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:osooliapp/core/errors/api_exception.dart';
-import 'package:osooliapp/features/auth/domain/entities/owner.dart';
-import 'package:osooliapp/features/auth/domain/repositories/auth_repository.dart';
-import 'package:osooliapp/features/auth/domain/usecases/request_otp.dart';
-import 'package:osooliapp/features/auth/presentation/controllers/login_controller.dart';
+import 'package:sakukiapp/core/errors/api_exception.dart';
+import 'package:sakukiapp/features/auth/domain/entities/owner.dart';
+import 'package:sakukiapp/features/auth/domain/repositories/auth_repository.dart';
+import 'package:sakukiapp/features/auth/domain/usecases/request_otp.dart';
+import 'package:sakukiapp/features/auth/presentation/controllers/login_controller.dart';
 
 class StubRepo implements AuthRepository {
   Object? requestOtpError;

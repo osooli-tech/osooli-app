@@ -147,7 +147,7 @@ class AppTranslations extends Translations {
           'next': 'التالي',
           'title': 'مرحباً',
           'description': 'هذه شاشة التعريف',
-          'onboarding_title_1': 'مرحباً في أصولي',
+          'onboarding_title_1': 'مرحباً في صكوكي',
           'onboarding_desc_1': 'منصتك الذكية لإدارة عقاراتك وصكوكك',
           'onboarding_title_2': 'إدارة العقارات',
           'onboarding_desc_2': 'تابع جميع عقاراتك بسهولة',

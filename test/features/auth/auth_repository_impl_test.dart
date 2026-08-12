@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/core/errors/api_exception.dart';
-import 'package:osooliapp/core/storage/token_storage.dart';
-import 'package:osooliapp/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:osooliapp/features/auth/data/models/owner_model.dart';
-import 'package:osooliapp/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:sakukiapp/core/errors/api_exception.dart';
+import 'package:sakukiapp/core/storage/token_storage.dart';
+import 'package:sakukiapp/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:sakukiapp/features/auth/data/models/owner_model.dart';
+import 'package:sakukiapp/features/auth/data/repositories/auth_repository_impl.dart';
 
 class MemoryTokenStorage implements TokenStorage {
   String? storedToken;

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/features/auth/data/models/owner_model.dart';
+import 'package:sakukiapp/features/auth/data/models/owner_model.dart';
 
 void main() {
   test('fromJson/toJson round-trips', () {

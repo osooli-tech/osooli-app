@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/features/dashboard/data/models/dashboard_data_model.dart';
+import 'package:sakukiapp/features/dashboard/data/models/dashboard_data_model.dart';
 
 void main() {
   test('parses the real dashboard payload shape', () {

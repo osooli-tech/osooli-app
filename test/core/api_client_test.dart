@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:osooliapp/core/errors/api_exception.dart';
-import 'package:osooliapp/core/network/api_client.dart';
-import 'package:osooliapp/core/storage/token_storage.dart';
+import 'package:sakukiapp/core/errors/api_exception.dart';
+import 'package:sakukiapp/core/network/api_client.dart';
+import 'package:sakukiapp/core/storage/token_storage.dart';
 
 class FakeTokenStorage implements TokenStorage {
   String? stored;

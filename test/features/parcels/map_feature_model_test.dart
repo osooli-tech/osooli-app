@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/features/parcels/data/models/map_feature_model.dart';
+import 'package:sakukiapp/features/parcels/data/models/map_feature_model.dart';
 
 void main() {
   test('parses a GeoJSON feature with properties and geometry', () {

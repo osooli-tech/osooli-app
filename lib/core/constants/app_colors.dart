@@ -8,7 +8,7 @@ class AppColors {
   static const textSoft = Color(0xFF6B7A8C);
   static const fieldFill = Color(0xFFF4F6F9);
 
-  // Brand colors from the Osooli logo, used by dashboard/compare screens.
+  // Brand colors from the Sakuki logo, used by dashboard/compare screens.
   static const teal = Color(0xFF14605C);
   static const tealSoft = Color(0xFFE3F0EF);
   static const gold = Color(0xFFC49A3C);

@@ -231,7 +231,7 @@ class _ParcelMap extends StatelessWidget {
       children: [
         TileLayer(
           urlTemplate: MapConfig.standardTiles,
-          userAgentPackageName: 'com.osooli.app',
+          userAgentPackageName: 'com.sakuki.app',
         ),
         PolygonLayer(
           polygons: [
@@ -533,6 +533,9 @@ class _BoundaryCompass extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Row(
+          // Geographic layout: with a north-up compass, west must stay on the
+          // viewer's left and east on the right, even in RTL locales.
+          textDirection: TextDirection.ltr,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(

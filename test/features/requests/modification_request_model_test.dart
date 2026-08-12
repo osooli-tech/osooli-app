@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/features/requests/data/models/modification_request_model.dart';
+import 'package:sakukiapp/features/requests/data/models/modification_request_model.dart';
 
 void main() {
   test('parses a modification request row', () {

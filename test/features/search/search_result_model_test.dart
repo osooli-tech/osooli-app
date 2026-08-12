@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/features/search/data/models/search_result_model.dart';
+import 'package:sakukiapp/features/search/data/models/search_result_model.dart';
 
 void main() {
   test('parses a search hit', () {

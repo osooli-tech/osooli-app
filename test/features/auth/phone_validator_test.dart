@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/features/auth/domain/validators/phone_validator.dart';
+import 'package:sakukiapp/features/auth/domain/validators/phone_validator.dart';
 
 void main() {
   test('accepts exact lengths per prefix', () {

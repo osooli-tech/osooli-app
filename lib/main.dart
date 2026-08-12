@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       locale: const Locale('ar', 'SA'),
       fallbackLocale: const Locale('en', 'US'),
       debugShowCheckedModeBanner: false,
-      title: 'Osooli',
+      title: 'Sakuki',
       initialBinding: InitialBinding(),
       initialRoute: AppPages.initial,
       getPages: AppPages.routes,

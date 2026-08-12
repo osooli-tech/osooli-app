@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/core/errors/api_exception.dart';
+import 'package:sakukiapp/core/errors/api_exception.dart';
 
 void main() {
   test('fromResponse reads message and field errors', () {

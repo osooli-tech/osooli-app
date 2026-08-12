@@ -54,7 +54,7 @@ class MapTab extends GetView<ParcelsMapController> {
                     controller.layerMode.value == MapLayerMode.satellite
                         ? MapConfig.satelliteTiles
                         : MapConfig.standardTiles,
-                userAgentPackageName: 'com.osooli.app',
+                userAgentPackageName: 'com.sakuki.app',
               ),
               PolygonLayer(
                 polygons: [

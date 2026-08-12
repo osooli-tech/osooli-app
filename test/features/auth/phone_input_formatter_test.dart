@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/features/auth/presentation/widgets/phone_input_formatter.dart';
+import 'package:sakukiapp/features/auth/presentation/widgets/phone_input_formatter.dart';
 
 TextEditingValue _apply(String oldText, String newText) =>
     PhoneInputFormatter().formatEditUpdate(

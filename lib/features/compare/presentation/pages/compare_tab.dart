@@ -324,7 +324,7 @@ class _CompareMap extends StatelessWidget {
               children: [
                 TileLayer(
                   urlTemplate: MapConfig.standardTiles,
-                  userAgentPackageName: 'com.osooli.app',
+                  userAgentPackageName: 'com.sakuki.app',
                 ),
                 PolygonLayer(
                   polygons: [

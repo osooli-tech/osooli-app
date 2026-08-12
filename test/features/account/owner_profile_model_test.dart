@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:osooliapp/features/account/data/models/owner_profile_model.dart';
+import 'package:sakukiapp/features/account/data/models/owner_profile_model.dart';
 
 void main() {
   test('parses the /me payload shape', () {
