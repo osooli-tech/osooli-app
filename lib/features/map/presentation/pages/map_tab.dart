@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/map_config.dart';
+import '../../../../core/utils/money_format.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../routes/app_pages.dart';
 import '../../../parcels/domain/entities/map_feature.dart';
@@ -34,6 +35,7 @@ class MapTab extends GetView<ParcelsMapController> {
       }
 
       final selected = controller.selected.value;
+      final ownerColors = _ownerColors(controller.features);
 
       return Stack(
         children: [
@@ -63,18 +65,41 @@ class MapTab extends GetView<ParcelsMapController> {
                       Polygon(
                         points: ring,
                         color: feature.id == selected?.id
-                            ? AppColors.mapGreen.withValues(alpha: .55)
-                            : AppColors.mapGreenFill,
+                            ? _ownerColor(ownerColors, feature.ownerName)
+                                .withValues(alpha: .55)
+                            : _ownerColor(ownerColors, feature.ownerName)
+                                .withValues(alpha: .30),
                         borderColor: feature.id == selected?.id
                             ? Colors.white
-                            : AppColors.mapGreen,
+                            : _ownerColor(ownerColors, feature.ownerName),
                         borderStrokeWidth:
                             feature.id == selected?.id ? 4 : 2.5,
+                        // Parcel number, drawn when it fits at the current zoom.
+                        label: feature.parcelNo,
+                        labelPlacementCalculator:
+                            const PolygonLabelPlacementCalculator.polylabel(),
+                        labelStyle: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primary,
+                          shadows: [
+                            Shadow(color: Colors.white, blurRadius: 4),
+                            Shadow(color: Colors.white, blurRadius: 8),
+                          ],
+                        ),
                       ),
                 ],
               ),
             ],
           ),
+
+          // Per-owner color legend (only when parcels split across owners).
+          if (ownerColors.length > 1)
+            PositionedDirectional(
+              top: MediaQuery.of(context).padding.top + 68,
+              start: 12,
+              child: _OwnerLegend(ownerColors: ownerColors),
+            ),
 
           // Layer toggle button.
           PositionedDirectional(
@@ -111,6 +136,100 @@ class MapTab extends GetView<ParcelsMapController> {
         ],
       );
     });
+  }
+
+  /// Stable color per owner name, assigned in order of first appearance.
+  static Map<String, Color> _ownerColors(List<MapFeature> features) {
+    final colors = <String, Color>{};
+    for (final feature in features) {
+      final owner = feature.ownerName;
+      if (owner == null || colors.containsKey(owner)) continue;
+      colors[owner] = _palette[colors.length % _palette.length];
+    }
+    return colors;
+  }
+
+  static Color _ownerColor(Map<String, Color> colors, String? owner) =>
+      colors[owner] ?? AppColors.mapGreen;
+
+  static const _palette = [
+    Color(0xFF22C55E),
+    Color(0xFF3B82F6),
+    Color(0xFFC49A3C),
+    Color(0xFFDB5461),
+    Color(0xFF9333EA),
+    Color(0xFF0EA5E9),
+    Color(0xFFF97316),
+    Color(0xFF14605C),
+  ];
+}
+
+/// Compact legend mapping owner names to their parcel colors.
+class _OwnerLegend extends StatelessWidget {
+  final Map<String, Color> ownerColors;
+  const _OwnerLegend({required this.ownerColors});
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = ownerColors.entries.take(6).toList();
+    final more = ownerColors.length - entries.length;
+
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 190),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: .92),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: .12),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final entry in entries)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: entry.value,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      entry.key,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          if (more > 0)
+            Text(
+              '+$more',
+              style: const TextStyle(fontSize: 11, color: AppColors.textSoft),
+            ),
+        ],
+      ),
+    );
   }
 }
 
@@ -169,6 +288,12 @@ class _SelectedParcelCard extends StatelessWidget {
                       : '${feature.areaSqm!.toStringAsFixed(0)} م²',
                 ),
               ),
+              Expanded(
+                child: _Item(
+                  label: 'plan_label'.tr,
+                  value: feature.planNo ?? '—',
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -183,27 +308,93 @@ class _SelectedParcelCard extends StatelessWidget {
               Expanded(
                 child: _Item(
                   label: 'compare_location'.tr,
-                  value: feature.district ?? '—',
+                  value: [
+                    if (feature.district != null) feature.district!,
+                    if (feature.city != null) feature.city!,
+                  ].join('، ').isEmpty
+                      ? '—'
+                      : [
+                          if (feature.district != null) feature.district!,
+                          if (feature.city != null) feature.city!,
+                        ].join('، '),
+                ),
+              ),
+              Expanded(
+                child: _Item(
+                  label: 'compare_asset_type'.tr,
+                  value: feature.assetType ?? '—',
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            height: 46,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.teal,
-                minimumSize: const Size.fromHeight(46),
-              ),
-              onPressed: () => Get.toNamed(
-                Routes.parcelDetail,
-                arguments: {'id': feature.id},
-              ),
-              child: Text('view_details'.tr,
-                  style: const TextStyle(fontSize: 15)),
+          if (feature.ownerName != null || feature.parcelPrice != null) ...[
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                if (feature.ownerName != null)
+                  Expanded(
+                    flex: 2,
+                    child: _Item(
+                      label: 'owners_title'.tr,
+                      value: feature.ownerName!,
+                    ),
+                  ),
+                if (feature.parcelPrice != null)
+                  Expanded(
+                    child: _Item(
+                      label: 'parcel_price_label'.tr,
+                      value:
+                          '${formatMoney(feature.parcelPrice!)} ${'sar'.tr}',
+                    ),
+                  ),
+              ],
             ),
+          ],
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  height: 40,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(
+                          color: AppColors.primary, width: 1.2),
+                      foregroundColor: AppColors.primary,
+                      textStyle: const TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.w700),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () => Get.toNamed(Routes.compare),
+                    icon: const Icon(Icons.balance_outlined, size: 16),
+                    label: Text('compare_short'.tr),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SizedBox(
+                  height: 40,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.teal,
+                      textStyle: const TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.w700),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () => Get.toNamed(
+                      Routes.parcelDetail,
+                      arguments: {'id': feature.id},
+                    ),
+                    child: Text('view_details'.tr),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

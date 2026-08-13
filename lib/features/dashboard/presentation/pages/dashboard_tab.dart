@@ -183,6 +183,28 @@ class DashboardTab extends GetView<DashboardController> {
                     ],
                     barColor: AppColors.gold,
                   ),
+                  if (data.byRegion.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    SimpleBarChart(
+                      title: 'by_region_title'.tr,
+                      entries: [
+                        for (final row in data.byRegion)
+                          BarChartEntry(row.name, row.parcelsCount),
+                      ],
+                      barColor: AppColors.teal,
+                    ),
+                  ],
+                  if (data.byOwner.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    SimpleBarChart(
+                      title: 'by_owner_title'.tr,
+                      entries: [
+                        for (final row in data.byOwner)
+                          BarChartEntry(row.name, row.parcelsCount),
+                      ],
+                      barColor: AppColors.accent,
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -35,6 +35,38 @@ class ParcelsListController extends GetxController {
 
   void setStatusFilter(String? status) => statusFilter.value = status;
 
+  /// Multi-select mode: long-press starts it, taps toggle, and the totals
+  /// bar shows combined area/value for the chosen parcels.
+  final selectionMode = false.obs;
+  final selectedIds = <int>{}.obs;
+
+  void startSelection(int id) {
+    selectionMode.value = true;
+    selectedIds.add(id);
+  }
+
+  void toggleSelected(int id) {
+    if (!selectedIds.remove(id)) {
+      selectedIds.add(id);
+    } else if (selectedIds.isEmpty) {
+      selectionMode.value = false;
+    }
+  }
+
+  void clearSelection() {
+    selectedIds.clear();
+    selectionMode.value = false;
+  }
+
+  List<ParcelSummary> get selectedParcels =>
+      items.where((p) => selectedIds.contains(p.id)).toList();
+
+  double get selectedAreaSqm => selectedParcels.fold(
+      0.0, (sum, p) => sum + (p.areaSqm ?? 0));
+
+  double get selectedValue => selectedParcels.fold(
+      0.0, (sum, p) => sum + (p.parcelPrice ?? 0));
+
   int _page = 1;
   bool _hasMore = false;
   Timer? _debounce;

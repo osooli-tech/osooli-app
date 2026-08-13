@@ -7,6 +7,8 @@ class DashboardDataModel extends DashboardData {
     super.portfolio,
     required super.byCity,
     required super.byDistrict,
+    super.byRegion,
+    super.byOwner,
     required super.unreadNotifications,
   });
 
@@ -33,6 +35,8 @@ class DashboardDataModel extends DashboardData {
       ),
       byCity: _counts(json['by_city']),
       byDistrict: _counts(json['by_district']),
+      byRegion: _counts(json['by_region']),
+      byOwner: _counts(json['by_owner']),
       unreadNotifications: _int(json['unread_notifications']),
     );
   }

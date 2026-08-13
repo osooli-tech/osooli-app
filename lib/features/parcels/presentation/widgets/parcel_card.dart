@@ -8,8 +8,14 @@ import 'deed_status_chip.dart';
 class ParcelCard extends StatelessWidget {
   final ParcelSummary parcel;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
-  const ParcelCard({super.key, required this.parcel, required this.onTap});
+  const ParcelCard({
+    super.key,
+    required this.parcel,
+    required this.onTap,
+    this.onLongPress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +24,7 @@ class ParcelCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(16),
         child: Container(
           padding: const EdgeInsets.all(16),

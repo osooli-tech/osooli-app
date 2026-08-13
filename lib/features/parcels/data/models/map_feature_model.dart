@@ -7,9 +7,14 @@ class MapFeatureModel extends MapFeature {
     required super.parcelNo,
     super.assetType,
     super.district,
+    super.city,
+    super.planNo,
     super.deedNo,
     super.deedStatus,
     super.areaSqm,
+    super.mPrice,
+    super.parcelPrice,
+    super.ownerName,
     super.polygons,
   });
 
@@ -22,9 +27,14 @@ class MapFeatureModel extends MapFeature {
       parcelNo: props['parcel_no']?.toString() ?? '',
       assetType: props['asset_type'] as String?,
       district: props['district'] as String?,
+      city: props['city'] as String?,
+      planNo: props['plan_no']?.toString(),
       deedNo: props['deed_no']?.toString(),
       deedStatus: props['deed_status'] as String?,
       areaSqm: (props['area_sqm'] as num?)?.toDouble(),
+      mPrice: (props['m_price'] as num?)?.toDouble(),
+      parcelPrice: (props['parcel_price'] as num?)?.toDouble(),
+      ownerName: props['owner_name'] as String?,
       polygons: ParcelDetailModel.parseMultiPolygon(feature['geometry']),
     );
   }

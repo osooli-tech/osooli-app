@@ -242,9 +242,23 @@ class _ParcelMap extends StatelessWidget {
                 color: AppColors.mapGreenFill,
                 borderColor: AppColors.mapGreen,
                 borderStrokeWidth: 3.5,
+                label: parcel.parcelNo,
+                labelPlacementCalculator:
+                    const PolygonLabelPlacementCalculator.polylabel(),
+                labelStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primary,
+                  shadows: [
+                    Shadow(color: Colors.white, blurRadius: 4),
+                    Shadow(color: Colors.white, blurRadius: 8),
+                  ],
+                ),
               ),
           ],
         ),
+        if (parcel.polygons.isNotEmpty && parcel.boundary != null)
+          MarkerLayer(markers: _dimensionMarkers(points, parcel.boundary!)),
         if (parcel.polygons.isEmpty && parcel.centroid != null)
           MarkerLayer(
             markers: [
@@ -257,6 +271,59 @@ class _ParcelMap extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  /// Boundary lengths pinned at the bounding-box midpoints of each side, so
+  /// the deed dimensions read directly off the sketch like a survey plan.
+  static List<Marker> _dimensionMarkers(
+    List<ll.LatLng> points,
+    ParcelBoundary boundary,
+  ) {
+    var minLat = points.first.latitude, maxLat = points.first.latitude;
+    var minLng = points.first.longitude, maxLng = points.first.longitude;
+    for (final p in points) {
+      if (p.latitude < minLat) minLat = p.latitude;
+      if (p.latitude > maxLat) maxLat = p.latitude;
+      if (p.longitude < minLng) minLng = p.longitude;
+      if (p.longitude > maxLng) maxLng = p.longitude;
+    }
+    final midLat = (minLat + maxLat) / 2;
+    final midLng = (minLng + maxLng) / 2;
+
+    Marker dimension(ll.LatLng point, double length) => Marker(
+          point: point,
+          width: 74,
+          height: 26,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: .92),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.mapGreen, width: 1),
+              ),
+              child: Text(
+                '${length.toStringAsFixed(length % 1 == 0 ? 0 : 1)} م',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+        );
+
+    return [
+      if (boundary.north?.lengthM != null)
+        dimension(ll.LatLng(maxLat, midLng), boundary.north!.lengthM!),
+      if (boundary.south?.lengthM != null)
+        dimension(ll.LatLng(minLat, midLng), boundary.south!.lengthM!),
+      if (boundary.east?.lengthM != null)
+        dimension(ll.LatLng(midLat, maxLng), boundary.east!.lengthM!),
+      if (boundary.west?.lengthM != null)
+        dimension(ll.LatLng(midLat, minLng), boundary.west!.lengthM!),
+    ];
   }
 }
 

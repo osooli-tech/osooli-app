@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/money_format.dart';
 import '../../../../core/widgets/app_error_view.dart';
 import '../../../../routes/app_pages.dart';
 import '../controllers/parcels_list_controller.dart';
@@ -71,12 +72,38 @@ class ParcelsListView extends GetView<ParcelsListController> {
                       );
                     }
                     final parcel = parcels[index];
-                    return ParcelCard(
-                      parcel: parcel,
-                      onTap: () => Get.toNamed(
-                        Routes.parcelDetail,
-                        arguments: {'id': parcel.id},
-                      ),
+                    final selecting = controller.selectionMode.value;
+                    final isSelected =
+                        controller.selectedIds.contains(parcel.id);
+                    return Stack(
+                      children: [
+                        ParcelCard(
+                          parcel: parcel,
+                          onTap: selecting
+                              ? () => controller.toggleSelected(parcel.id)
+                              : () => Get.toNamed(
+                                    Routes.parcelDetail,
+                                    arguments: {'id': parcel.id},
+                                  ),
+                          onLongPress: selecting
+                              ? null
+                              : () => controller.startSelection(parcel.id),
+                        ),
+                        if (selecting)
+                          PositionedDirectional(
+                            top: 10,
+                            start: 10,
+                            child: Icon(
+                              isSelected
+                                  ? Icons.check_circle
+                                  : Icons.radio_button_unchecked,
+                              size: 22,
+                              color: isSelected
+                                  ? AppColors.accent
+                                  : AppColors.textSoft,
+                            ),
+                          ),
+                      ],
                     );
                   },
                 ),
@@ -84,7 +111,77 @@ class ParcelsListView extends GetView<ParcelsListController> {
             );
           }),
         ),
+        Obx(() {
+          if (!controller.selectionMode.value) return const SizedBox.shrink();
+          return _SelectionTotalsBar(controller: controller);
+        }),
       ],
+    );
+  }
+}
+
+/// Totals for the parcels chosen in multi-select mode.
+class _SelectionTotalsBar extends StatelessWidget {
+  final ParcelsListController controller;
+  const _SelectionTotalsBar({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    final count = controller.selectedIds.length;
+    final area = controller.selectedAreaSqm;
+    final value = controller.selectedValue;
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+          16, 12, 16, 12 + MediaQuery.of(context).padding.bottom),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: .2),
+            blurRadius: 12,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'selection_count'.trParams({'count': '$count'}),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white70,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  [
+                    '${'compare_area'.tr}: ${formatMoney(area)} م²',
+                    if (value > 0)
+                      '${'parcel_price_label'.tr}: ${formatMoney(value)} ${'sar'.tr}',
+                  ].join('   ·   '),
+                  style: const TextStyle(
+                    fontSize: 13.5,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: controller.clearSelection,
+            icon: const Icon(Icons.close, color: Colors.white70, size: 22),
+            tooltip: 'clear'.tr,
+          ),
+        ],
+      ),
     );
   }
 }

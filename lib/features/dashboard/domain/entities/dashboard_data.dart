@@ -52,6 +52,10 @@ class DashboardData {
   final PortfolioSummary portfolio;
   final List<NamedCount> byCity;
   final List<NamedCount> byDistrict;
+  final List<NamedCount> byRegion;
+
+  /// How parcels split between the owner and co-owners on latest deeds.
+  final List<NamedCount> byOwner;
   final int unreadNotifications;
 
   const DashboardData({
@@ -60,6 +64,8 @@ class DashboardData {
     this.portfolio = const PortfolioSummary(),
     required this.byCity,
     required this.byDistrict,
+    this.byRegion = const [],
+    this.byOwner = const [],
     required this.unreadNotifications,
   });
 }
